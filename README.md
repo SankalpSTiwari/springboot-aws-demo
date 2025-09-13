@@ -1,6 +1,8 @@
 # Spring Boot AWS Demo
 
-A simple Spring Boot application demonstrating REST API development and AWS deployment.
+A complete Spring Boot application demonstrating REST API development and automated AWS EC2 deployment.
+
+🚀 **Live Demo**: http://3.85.219.17:8080/api/hello
 
 ## Features
 
@@ -8,7 +10,10 @@ A simple Spring Boot application demonstrating REST API development and AWS depl
 - JPA/Hibernate with H2 database
 - Spring Boot Actuator for monitoring
 - Sample User entity and CRUD operations
-- Ready for AWS deployment
+- **🎯 Automated AWS EC2 deployment scripts**
+- **🔧 One-command deployment to AWS Free Tier**
+- **📊 Production-ready with Nginx reverse proxy**
+- **🔄 Systemd service with auto-restart**
 
 ## API Endpoints
 
@@ -63,45 +68,123 @@ mvn clean package
 
 This creates a JAR file in the `target/` directory.
 
-## AWS Deployment
+## 🚀 AWS EC2 Deployment (FREE!)
 
-This application is configured for deployment on AWS using:
-- Docker containerization
-- AWS Elastic Beanstalk or EC2
-- RDS PostgreSQL for production database
-- GitHub Actions for CI/CD
+Deploy your Spring Boot application to AWS EC2 with just **2 simple commands**:
 
-### Quick Start Deployment Options
+### ⚡ Quick Start (2 Commands)
 
-1. **Docker Compose (Local):**
+```bash
+# 1. Create EC2 instance (t2.micro - FREE tier)
+./create-ec2-instance.sh
+
+# 2. Deploy your application
+./deploy-to-ec2.sh springboot-demo-key.pem YOUR-EC2-IP
+```
+
+### 💰 Cost Breakdown
+- **EC2 t2.micro**: 750 hours/month FREE (12 months)
+- **Storage**: 30 GB EBS FREE (12 months)
+- **Data Transfer**: 15 GB/month FREE
+- **Total Cost**: **$0** for first year!
+
+### 🎯 What You Get
+- ✅ Fully automated EC2 setup
+- ✅ Java 17 runtime installed
+- ✅ Nginx reverse proxy configured
+- ✅ Systemd service (auto-restart)
+- ✅ Health monitoring setup
+- ✅ Production-ready logging
+
+### 📋 Prerequisites
+- AWS CLI installed and configured (`aws configure`)
+- AWS account (free tier eligible)
+
+### 📚 Deployment Options
+
+1. **🎯 EC2 Automated (Recommended - FREE):**
+   ```bash
+   ./create-ec2-instance.sh
+   ./deploy-to-ec2.sh springboot-demo-key.pem YOUR-EC2-IP
+   ```
+
+2. **🐳 Docker Compose (Local):**
    ```bash
    docker-compose up --build
    ```
 
-2. **AWS Elastic Beanstalk:**
+3. **☁️ AWS Elastic Beanstalk:**
    ```bash
    eb init springboot-aws-demo --platform java-17
    eb create springboot-aws-demo-prod
    eb deploy
    ```
 
-3. **Docker Registry:**
-   ```bash
-   docker pull ghcr.io/your-username/springboot-aws-demo:latest
-   docker run -p 8080:8080 ghcr.io/your-username/springboot-aws-demo:latest
-   ```
+### 📖 Documentation
+- **[EC2 Setup Guide](ec2-setup-guide.md)** - Complete manual setup guide
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - All deployment options
+- **Scripts**: `create-ec2-instance.sh`, `deploy-to-ec2.sh`, `ec2-deployment.sh`
 
-For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+## 🌐 Live Application URLs
 
-## Sample Data
+**Base URL**: http://3.85.219.17:8080
+
+### 🔗 Quick Test Links
+- [Hello API](http://3.85.219.17:8080/api/hello) - Simple greeting
+- [Hello with Name](http://3.85.219.17:8080/api/hello/YourName) - Personalized greeting
+- [All Users](http://3.85.219.17:8080/api/users) - User list
+- [Health Check](http://3.85.219.17:8080/actuator/health) - Application status
+- [Metrics](http://3.85.219.17:8080/actuator/metrics) - Performance metrics
+
+### 📱 cURL Examples
+```bash
+# Test the API
+curl http://3.85.219.17:8080/api/hello
+curl http://3.85.219.17:8080/api/users
+
+# Create a new user
+curl -X POST http://3.85.219.17:8080/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"New User","email":"newuser@example.com"}'
+```
+
+## 📊 Sample Data
 
 The application initializes with sample users:
 - John Doe (john.doe@example.com)
 - Jane Smith (jane.smith@example.com)
 - Bob Johnson (bob.johnson@example.com)
 
-## Configuration
+## ⚙️ Configuration
 
 Application properties can be found in `src/main/resources/application.properties`.
 
 For production deployment, override properties using environment variables or external configuration files.
+
+## 🛠️ Project Structure
+
+```
+springboot-aws-demo/
+├── src/main/java/com/example/springbootawsdemo/
+│   ├── controller/          # REST Controllers
+│   ├── entity/             # JPA Entities
+│   ├── repository/         # Data Repositories
+│   └── config/            # Configuration Classes
+├── create-ec2-instance.sh  # AWS EC2 instance creation
+├── deploy-to-ec2.sh       # Deployment automation
+├── ec2-deployment.sh      # Server-side setup
+├── ec2-setup-guide.md     # Manual deployment guide
+└── DEPLOYMENT.md          # Complete deployment docs
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
