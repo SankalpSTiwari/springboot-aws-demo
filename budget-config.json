@@ -1,0 +1,14 @@
+{
+    "BudgetName": "SpringBootDemo-Protection",
+    "BudgetLimit": {
+        "Amount": "5.00",
+        "Unit": "USD"
+    },
+    "TimeUnit": "MONTHLY",
+    "TimePeriod": {
+        "Start": "T00:00:00Z",
+        "End": "2030-12-31T23:59:59Z"
+    },
+    "BudgetType": "COST",
+    "CostFilters": {}
+}
