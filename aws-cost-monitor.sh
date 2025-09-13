@@ -45,16 +45,23 @@ get_current_costs() {
     local start_date=$(date -j -f "%Y-%m-%d" "$(date +%Y-%m)-01" +%Y-%m-%d 2>/dev/null || date +%Y-%m-01)
     local end_date=$(date +%Y-%m-%d)
     
-    print_status "Checking costs from ${start_date} to ${end_date}..."
+    # Removed the print statement to avoid output in subshell
     
     # Get billing data (requires billing permissions)
-    aws ce get-cost-and-usage \
+    local cost_result=$(aws ce get-cost-and-usage \
         --time-period Start=${start_date},End=${end_date} \
         --granularity MONTHLY \
         --metrics BlendedCost \
         --region us-east-1 \
         --query 'ResultsByTime[0].Total.BlendedCost.Amount' \
-        --output text 2>/dev/null || echo "0"
+        --output text 2>/dev/null)
+    
+    # Return 0 if no result or error
+    if [ $? -ne 0 ] || [ -z "$cost_result" ] || [ "$cost_result" = "None" ]; then
+        echo "0.00"
+    else
+        echo "$cost_result"
+    fi
 }
 
 # Function to get EC2 instance ID from info file
@@ -178,10 +185,15 @@ setup_billing_alerts() {
 monitor_costs() {
     print_header "💰 Current AWS Costs"
     
-    # Get current costs
-    current_cost=$(get_current_costs)
+    # Get current costs (suppress the "Checking costs" message in subshell)
+    current_cost=$(get_current_costs 2>/dev/null)
     
-    if [ "$current_cost" != "0" ] && [ -n "$current_cost" ]; then
+    # Show what period we're checking
+    local start_date=$(date -j -f "%Y-%m-%d" "$(date +%Y-%m)-01" +%Y-%m-%d 2>/dev/null || date +%Y-%m-01)
+    local end_date=$(date +%Y-%m-%d)
+    print_status "Checking period: ${start_date} to ${end_date}"
+    
+    if [ "$current_cost" != "0" ] && [ "$current_cost" != "0.00" ] && [ -n "$current_cost" ]; then
         print_status "Current month charges: \$${current_cost}"
         
         # Compare with threshold (using bc for floating point comparison)
@@ -209,9 +221,17 @@ monitor_costs() {
             fi
         else
             print_warning "bc not available for cost comparison. Install with: brew install bc"
+            # Fallback comparison without bc
+            if [ "$(echo "$current_cost" | cut -d'.' -f1)" -gt "$(echo "$COST_THRESHOLD" | cut -d'.' -f1)" ]; then
+                print_error "🚨 COST ALERT: Charges (\$${current_cost}) may exceed threshold (\$${COST_THRESHOLD})!"
+                print_warning "Install 'bc' for accurate cost comparison: brew install bc"
+            else
+                print_status "✅ Costs appear to be within threshold (rough comparison)"
+            fi
         fi
     else
-        print_status "✅ No charges detected this month"
+        print_status "✅ No charges detected this month (or billing data unavailable)"
+        print_status "💡 Note: Billing data may take 24-48 hours to appear"
     fi
     
     return 0
