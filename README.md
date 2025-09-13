@@ -144,6 +144,7 @@ Deploy your Spring Boot application to AWS EC2 with just **2 simple commands**:
 **Protect yourself from unexpected AWS charges:**
 
 ### ⚡ Quick Protection Setup
+
 ```bash
 # Set up complete billing protection (5 minutes)
 ./setup-billing-protection.sh 5.00 your-email@example.com
@@ -156,6 +157,7 @@ Deploy your Spring Boot application to AWS EC2 with just **2 simple commands**:
 ```
 
 ### 🚨 Auto-Protection Features
+
 - ✅ **Auto-shutdown** when costs exceed $5
 - ✅ **Email alerts** at cost thresholds
 - ✅ **Monitoring every 6 hours** automatically

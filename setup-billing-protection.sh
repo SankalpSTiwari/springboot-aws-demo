@@ -135,7 +135,7 @@ create_budget() {
     },
     "TimeUnit": "MONTHLY",
     "TimePeriod": {
-        "Start": "$(date -d "$(date +%Y-%m-01)" +%Y-%m-%d)T00:00:00Z",
+        "Start": "$(date -j -f "%Y-%m-%d" "$(date +%Y-%m)-01" +%Y-%m-%d 2>/dev/null || date +%Y-%m-01)T00:00:00Z",
         "End": "2030-12-31T23:59:59Z"
     },
     "BudgetType": "COST",
