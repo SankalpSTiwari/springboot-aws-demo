@@ -98,3 +98,5 @@ application-prod.properties
 
 # Docker
 .dockerignore
+*.pem
+ec2-instance-info.txt
